@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Music Player</title>
+    <link rel="icon" type="image/png" href="favicon.png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.10.2/css/all.min.css"/>
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./img/sradio.png" type="image/x-icon">
+</head>
+<body class="background">
+    <div class="player-container">
+        <!-- Song -->
+        <div class="img-container">
+            <img src="img/1.jpeg" alt="Album Art">
+        </div>
+        <!-- <p>Now playing</p> -->
+        <h2 id="title">P1</h2>
+        <h3 id="artist">Misc</h3>
+        <audio src="https://sverigesradio.se/topsy/direkt/srapi/132.mp3"></audio>
+        <!-- Progress -->
+        <div class="progress-container" id="progress-container">
+            <div class="progress" id="progress"></div>
+            <div class="duration-wrapper">
+                <span id="current-time">0:00</span>
+                
+            </div>
+        </div>
+        <!-- Controls -->
+        <div class="player-controls">
+            <i class="fas fa-backward" id="prev" title="Previous"></i>
+            <i class="fas fa-play main-button" id="play" title="Play"></i>
+            <i class="fas fa-forward" id="next" title="Next"></i>
+        </div>
+    </div>
+    
+    
+    <!-- Script -->
+    <script src="script.js"></script>
+</body>
+</html>
