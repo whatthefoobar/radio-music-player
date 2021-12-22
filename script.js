@@ -73,7 +73,6 @@ async function loadStation() {
   title.textContent = channelNames[stationIndex];
   image.src = `./img/${Math.floor(Math.random() * 9)}.jpeg`;
   music.src = mp3Channels[stationIndex];
-
   //now get Radio playlist Data here
 
   
