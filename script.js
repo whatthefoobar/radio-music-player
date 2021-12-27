@@ -1,6 +1,6 @@
 const image = document.querySelector('img');
-const title = document.getElementById('title');
-const artist = document.getElementById('artist');
+let title = document.getElementById('title');
+let artist = document.getElementById('artist');
 const music = document.querySelector('audio');
 const currentTimeEl = document.getElementById('current-time');
 const durationEl = document.getElementById('duration');
@@ -20,18 +20,40 @@ let isPlaying = false;
 
 // endpoint for channels including mp3 urls to play current radio program
 const channelsUrl = "https://api.sr.se/api/v2/channels?format=json&indent=true&pagination=false";
+const defaultApiUrl = "http://api.sr.se/api/v2";
+const defaultChannelId = "132";
 
+// get all channel ids
 async function getRadioChannels() {
   try {
     let response = await fetch(channelsUrl);
     let res = await response.json();
-    
-    return res.channels;
+    const channels = res.channels;
+
+    // console.log("All channels: ", channels);
+    return channels ;
 
   } catch (error) {
     console.log("error :", error);
   }
 }
+
+async function fetchCurrentlyPlayingByChannelId(id) {
+  try {
+    let response = await fetch(`${defaultApiUrl}/playlists/rightnow?format=json&indent=true&channelid=${id}`);
+    let playlist = await response.json();
+    // const channels = res.channels;
+
+    // console.log("All channels: ", channels);
+    console.log(playlist);
+    return playlist ;
+
+  } catch (error) {
+    console.log("error :", error);
+  }
+}
+
+
 
 // Play
 function playStation() {
@@ -56,35 +78,73 @@ playBtn.addEventListener('click', () => (isPlaying ? pauseStation() : playStatio
 // Update DOM // change this or its position
 async function loadStation() {
   let channels = await getRadioChannels();
-  
+
   let mp3Channels= [];
   channels.map((channel)=>{
     mp3Channels.push(channel.liveaudio.url);
-    return mp3Channels;
+    return mp3Channels; // returns a list of all the channel's mp4 urls
   });
   // console.log("All mp3Channels are:", mp3Channels);
 
   let channelNames =[];
   channels.map((channel)=>{
     channelNames.push(channel.name);
-    return channelNames;
+    return channelNames; // returns a list of all the channel's mp4 urls
   });
-  // console.log("All channel names are:", channelNames);
-  title.textContent = channelNames[stationIndex];
-  image.src = `./img/${Math.floor(Math.random() * 9)}.jpeg`;
-  music.src = mp3Channels[stationIndex];
-  //now get Radio playlist Data here
 
+  //now get all channel Ids
+  const allChannelIds = [];
+  channels.map((channel)=>{
+    allChannelIds.push(channel.id);
+    return allChannelIds;
+  });
+
+  console.log(allChannelIds);
+  console.log("current mp3 url playing", mp3Channels[stationIndex]);
+  console.log("current channel Id is", allChannelIds[stationIndex]);
+  // console.log("current Channel is playing", channelIdSubstring);
+
+  //pass channel Id to fetchCurrentlyPlayingByChannelId to get the currently playing song
+    console.log(allChannelIds[stationIndex]);
+    let playlist = await fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]);
+    console.log(playlist.playlist);
+    console.log("prev song is",playlist.playlist.previoussong);
+    console.log("current song is",playlist.playlist.song);
   
+  
+  
+  // let currentSong = playlist.playlist.song;
+  // let previousSong = playlist.playlist.previoussong;
+  // console.log("This channels current song is:", currentSong);
+  // console.log("This channels current prev song was:", previousSong);
+
+   // console.log("All channel names are:", channelNames);
+   title.textContent = channelNames[stationIndex];
+   artist.textContent = playlist.playlist.song.description? playlist.playlist.song.description : playlist.playlist.previoussong.description; // i need the song frpm fetchCurrentlyPlayingByChannelId() here
+   image.src = `./img/${Math.floor(Math.random() * 9)}.jpeg`;
+   music.src = mp3Channels[stationIndex];
+ 
 }
 
-// Previous Song // previous station
+// function getChannelIdfromChannelUrl(urlSrc){
+//   return channelIdSubstring = urlSrc.substring(
+//     urlSrc.indexOf("i/") + 2, 
+//     urlSrc.lastIndexOf(".mp3")
+//   );
+// }
+
+
+
+
+// Previous station
 async function prevStation() {
+  // example mp3url https://sverigesradio.se/topsy/direkt/srapi/132.mp3
   let channels = await getRadioChannels();
   
   let mp3Channels= [];
   channels.map((channel)=>{
     mp3Channels.push(channel.liveaudio.url);
+    
     return mp3Channels;
   });
 
@@ -93,13 +153,15 @@ async function prevStation() {
     stationIndex = mp3Channels.length - 1;
   }
 
+  
   loadStation(mp3Channels[stationIndex]);
+  
   // playStation();
   pauseStation();
 
 }
 
-// Next Song // next station
+// Next station
 async function nextStation() {
   let channels = await getRadioChannels();
   // console.log(channels);
@@ -119,6 +181,15 @@ async function nextStation() {
   // playStation();
   pauseStation();
 };
+
+
+
+
+
+
+
+
+
 
 // Update Progress Bar & Time
 function updateProgressBar(e) {
