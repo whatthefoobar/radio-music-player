@@ -111,8 +111,8 @@ async function loadStation() {
     
     let playlist = await fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]);
     //console.log(playlist.song[0].description);
-    //setInterval(fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]), 30000);
-  
+    let currentStation = allChannelIds[stationIndex];
+   
   
    title.textContent = channelNames[stationIndex];
    if(playlist.song.length !== 0){
@@ -161,10 +161,10 @@ async function prevStation() {
   }
 
   
-  loadStation(mp3Channels[stationIndex]);
+  await loadStation(mp3Channels[stationIndex]);
   
-  // playStation();
-  pauseStation();
+  playStation();
+  // pauseStation();
 
 }
 
@@ -184,9 +184,9 @@ async function nextStation() {
     stationIndex = 0;
   }
 
-  loadStation(mp3Channels[stationIndex]);
-  // playStation();
-  pauseStation();
+  await loadStation(mp3Channels[stationIndex]);
+  playStation();
+
 };
 
 // Update Progress Bar & Time
