@@ -19,8 +19,8 @@ body {
 }
 
 .player-container {
-  height: 450px;
-  width: 350px;
+  /* height: 500px; */
+  width: 370px;
   background: #e7e7e7;
   border-radius: 20px;
   box-shadow: 0 15px 30px 5px rgba(0, 0, 0, 0.3);
@@ -31,7 +31,7 @@ body {
   height: 250px;
   position: relative;
   top: -35px;
-  left: 50px;
+  left: 65px;
 }
 
 .img-container img {
@@ -55,6 +55,7 @@ h3 {
   font-weight: 400;
   margin: 5px 0 0;
   color:#333;
+  padding-bottom: 10px;
 }
 
 span{
@@ -90,9 +91,10 @@ span{
 /* Controls */
 .player-controls {
   position: relative;
-  top: -10px;
+  top: -20px;
   left: 100px;
   width: 200px;
+
 }
 
 .fas {

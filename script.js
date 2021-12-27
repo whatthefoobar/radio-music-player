@@ -41,7 +41,7 @@ async function getRadioChannels() {
 async function fetchCurrentlyPlayingByChannelId(id) {
   try {
     let response = await fetch(`${defaultApiUrl}/playlists/getplaylistbychannelid?id=${id}&format=json&indent=true`);
-    // `${defaultApiUrl}/playlists/getplaylistbychannelid?id=${id}&format=json`
+    if(!response.ok) throw Error("Did not receive expected data")
     let playlist = await response.json();
     // const channels = res.channels;
 
@@ -50,7 +50,8 @@ async function fetchCurrentlyPlayingByChannelId(id) {
     return playlist ;
 
   } catch (error) {
-    console.log("error :", error);
+    // console.log("error :", error);
+    console.log(err.message);
   }
 }
 
@@ -110,7 +111,7 @@ async function loadStation() {
     
     let playlist = await fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]);
     //console.log(playlist.song[0].description);
-    // fetchInterval = setInterval(fetchCurrentlyPlayingByChannelId, 3000);
+    //setInterval(fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]), 30000);
   
   
    title.textContent = channelNames[stationIndex];
@@ -139,7 +140,6 @@ async function loadStation() {
 }
 
 loadStation(132);
-
 
 
 
