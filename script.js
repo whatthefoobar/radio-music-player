@@ -40,7 +40,8 @@ async function getRadioChannels() {
 
 async function fetchCurrentlyPlayingByChannelId(id) {
   try {
-    let response = await fetch(`${defaultApiUrl}/playlists/rightnow?format=json&indent=true&channelid=${id}`);
+    let response = await fetch(`${defaultApiUrl}/playlists/getplaylistbychannelid?id=${id}&format=json&indent=true`);
+    // `${defaultApiUrl}/playlists/getplaylistbychannelid?id=${id}&format=json`
     let playlist = await response.json();
     // const channels = res.channels;
 
@@ -106,32 +107,38 @@ async function loadStation() {
 
   //pass channel Id to fetchCurrentlyPlayingByChannelId to get the currently playing song
     console.log(allChannelIds[stationIndex]);
+    
     let playlist = await fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]);
-    console.log(playlist.playlist);
-    console.log("prev song is",playlist.playlist.previoussong);
-    console.log("current song is",playlist.playlist.song);
+    //console.log(playlist.song[0].description);
+    // fetchInterval = setInterval(fetchCurrentlyPlayingByChannelId, 3000);
   
   
-  
-  // let currentSong = playlist.playlist.song;
-  // let previousSong = playlist.playlist.previoussong;
-  // console.log("This channels current song is:", currentSong);
-  // console.log("This channels current prev song was:", previousSong);
-
-   // console.log("All channel names are:", channelNames);
    title.textContent = channelNames[stationIndex];
-   artist.textContent = playlist.playlist.song.description? playlist.playlist.song.description : playlist.playlist.previoussong.description; // i need the song frpm fetchCurrentlyPlayingByChannelId() here
+   if(playlist.song.length !== 0){
+    artist.textContent = playlist.song[0].description ;
+   } else {
+    artist.textContent = "No song currently playing" ;
+   }
+
+   
+  //  setInterval(() => {
+  //   fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]);
+  //   artist.textContent = playlist.song[0].description // i need the song frpm fetchCurrentlyPlayingByChannelId() here
+  //  }, 10000);
+   
    image.src = `./img/${Math.floor(Math.random() * 9)}.jpeg`;
    music.src = mp3Channels[stationIndex];
+
+  //  if(playlist.song.length != 0){
+  //   music.src = mp3Channels[stationIndex]
+  //  } else {
+  //   music.src = "";
+  //  }
+   
  
 }
 
-// function getChannelIdfromChannelUrl(urlSrc){
-//   return channelIdSubstring = urlSrc.substring(
-//     urlSrc.indexOf("i/") + 2, 
-//     urlSrc.lastIndexOf(".mp3")
-//   );
-// }
+loadStation(132);
 
 
 
@@ -181,15 +188,6 @@ async function nextStation() {
   // playStation();
   pauseStation();
 };
-
-
-
-
-
-
-
-
-
 
 // Update Progress Bar & Time
 function updateProgressBar(e) {
