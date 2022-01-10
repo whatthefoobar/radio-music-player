@@ -1,16 +1,15 @@
-const image = document.querySelector('img');
-let title = document.getElementById('title');
-let artist = document.getElementById('artist');
-const music = document.querySelector('audio');
-const currentTimeEl = document.getElementById('current-time');
-const durationEl = document.getElementById('duration');
-const progress = document.getElementById('progress');
-const progressContainer = document.getElementById('progress-container');
-const prevBtn = document.getElementById('prev');
-const playBtn = document.getElementById('play');
-const nextBtn = document.getElementById('next');
-const cardContainer = document.querySelector(".container")
-
+const image = document.querySelector("img");
+let title = document.getElementById("title");
+let artist = document.getElementById("artist");
+const music = document.querySelector("audio");
+const currentTimeEl = document.getElementById("current-time");
+const durationEl = document.getElementById("duration");
+const progress = document.getElementById("progress");
+const progressContainer = document.getElementById("progress-container");
+const prevBtn = document.getElementById("prev");
+const playBtn = document.getElementById("play");
+const nextBtn = document.getElementById("next");
+const cardContainer = document.querySelector(".container");
 
 // Current Song // current station
 let stationIndex = 0;
@@ -19,7 +18,8 @@ let stationIndex = 0;
 let isPlaying = false;
 
 // endpoint for channels including mp3 urls to play current radio program
-const channelsUrl = "https://api.sr.se/api/v2/channels?format=json&indent=true&pagination=false";
+const channelsUrl =
+  "https://api.sr.se/api/v2/channels?format=json&indent=true&pagination=false";
 const defaultApiUrl = "http://api.sr.se/api/v2";
 const defaultChannelId = "132";
 
@@ -31,8 +31,7 @@ async function getRadioChannels() {
     const channels = res.channels;
 
     // console.log("All channels: ", channels);
-    return channels ;
-
+    return channels;
   } catch (error) {
     console.log("error :", error);
   }
@@ -40,28 +39,27 @@ async function getRadioChannels() {
 
 async function fetchCurrentlyPlayingByChannelId(id) {
   try {
-    let response = await fetch(`${defaultApiUrl}/playlists/getplaylistbychannelid?id=${id}&format=json&indent=true`);
-    if(!response.ok) throw Error("Did not receive expected data")
+    let response = await fetch(
+      `${defaultApiUrl}/playlists/getplaylistbychannelid?id=${id}&format=json&indent=true`
+    );
+    if (!response.ok) throw Error("Did not receive expected data");
     let playlist = await response.json();
     // const channels = res.channels;
 
     // console.log("All channels: ", channels);
     console.log(playlist);
-    return playlist ;
-
+    return playlist;
   } catch (error) {
     // console.log("error :", error);
-    console.log(err.message);
+    console.log(error.message);
   }
 }
-
-
 
 // Play
 function playStation() {
   isPlaying = true;
-  playBtn.classList.replace('fa-play', 'fa-pause');
-  playBtn.setAttribute('title', 'Pause');
+  playBtn.classList.replace("fa-play", "fa-pause");
+  playBtn.setAttribute("title", "Pause");
   music.play();
   console.log(music.src);
 }
@@ -69,89 +67,87 @@ function playStation() {
 // Pause
 function pauseStation() {
   isPlaying = false;
-  playBtn.classList.replace('fa-pause', 'fa-play');
-  playBtn.setAttribute('title', 'Play');
+  playBtn.classList.replace("fa-pause", "fa-play");
+  playBtn.setAttribute("title", "Play");
   music.pause();
 }
 
 // // Play or Pause Event Listener
-playBtn.addEventListener('click', () => (isPlaying ? pauseStation() : playStation()));
+playBtn.addEventListener("click", () =>
+  isPlaying ? pauseStation() : playStation()
+);
 
 // Update DOM // change this or its position
 async function loadStation() {
   let channels = await getRadioChannels();
 
-  let mp3Channels= [];
-  channels.map((channel)=>{
+  let mp3Channels = [];
+  channels.map((channel) => {
     mp3Channels.push(channel.liveaudio.url);
     return mp3Channels; // returns a list of all the channel's mp4 urls
   });
   // console.log("All mp3Channels are:", mp3Channels);
 
-  let channelNames =[];
-  channels.map((channel)=>{
+  let channelNames = [];
+  channels.map((channel) => {
     channelNames.push(channel.name);
     return channelNames; // returns a list of all the channel's mp4 urls
   });
 
   //now get all channel Ids
   const allChannelIds = [];
-  channels.map((channel)=>{
+  channels.map((channel) => {
     allChannelIds.push(channel.id);
     return allChannelIds;
   });
 
-  console.log(allChannelIds);
+  // console.log(allChannelIds);
   console.log("current mp3 url playing", mp3Channels[stationIndex]);
   console.log("current channel Id is", allChannelIds[stationIndex]);
   // console.log("current Channel is playing", channelIdSubstring);
 
   //pass channel Id to fetchCurrentlyPlayingByChannelId to get the currently playing song
-    console.log(allChannelIds[stationIndex]);
-    
-    let playlist = await fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]);
-    //console.log(playlist.song[0].description);
-    let currentStation = allChannelIds[stationIndex];
-   
-  
-   title.textContent = channelNames[stationIndex];
-   if(playlist.song.length !== 0){
-    artist.textContent = playlist.song[0].description ;
-   } else {
-    artist.textContent = "No song currently playing" ;
-   }
+  console.log(allChannelIds[stationIndex]);
 
-   
+  let playlist = await fetchCurrentlyPlayingByChannelId(
+    allChannelIds[stationIndex]
+  );
+  //console.log(playlist.song[0].description);
+  let currentStation = allChannelIds[stationIndex];
+
+  title.textContent = channelNames[stationIndex];
+  if (playlist.song.length !== 0) {
+    artist.textContent = playlist.song[0].description;
+    setTimeout(
+      () => fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]),
+      10000
+    );
+    artist.textContent = playlist.song[0].description;
+  } else {
+    artist.textContent = "No song currently playing";
+  }
+  //  check playlist at https://api.sr.se/api/v2/playlists/getplaylistbychannelid?id=164&format=json&indent=true
+
   //  setInterval(() => {
   //   fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]);
   //   artist.textContent = playlist.song[0].description // i need the song frpm fetchCurrentlyPlayingByChannelId() here
   //  }, 10000);
-   
-   image.src = `./img/${Math.floor(Math.random() * 9)}.jpeg`;
-   music.src = mp3Channels[stationIndex];
 
-  //  if(playlist.song.length != 0){
-  //   music.src = mp3Channels[stationIndex]
-  //  } else {
-  //   music.src = "";
-  //  }
-   
- 
+  image.src = `./img/${Math.floor(Math.random() * 9)}.jpeg`;
+  music.src = mp3Channels[stationIndex];
 }
 
 loadStation(132);
-
-
 
 // Previous station
 async function prevStation() {
   // example mp3url https://sverigesradio.se/topsy/direkt/srapi/132.mp3
   let channels = await getRadioChannels();
-  
-  let mp3Channels= [];
-  channels.map((channel)=>{
+
+  let mp3Channels = [];
+  channels.map((channel) => {
     mp3Channels.push(channel.liveaudio.url);
-    
+
     return mp3Channels;
   });
 
@@ -160,12 +156,9 @@ async function prevStation() {
     stationIndex = mp3Channels.length - 1;
   }
 
-  
   await loadStation(mp3Channels[stationIndex]);
-  
-  playStation();
-  // pauseStation();
 
+  playStation();
 }
 
 // Next station
@@ -173,8 +166,8 @@ async function nextStation() {
   let channels = await getRadioChannels();
   // console.log(channels);
 
-  let mp3Channels= [];
-  channels.map((channel)=>{
+  let mp3Channels = [];
+  channels.map((channel) => {
     mp3Channels.push(channel.liveaudio.url);
     return mp3Channels;
   });
@@ -186,8 +179,7 @@ async function nextStation() {
 
   await loadStation(mp3Channels[stationIndex]);
   playStation();
-
-};
+}
 
 // Update Progress Bar & Time
 function updateProgressBar(e) {
@@ -225,13 +217,13 @@ function setProgressBar(e) {
 }
 
 // Event Listeners
-prevBtn.addEventListener('click', prevStation);
-nextBtn.addEventListener('click', nextStation);
-music.addEventListener('ended', nextStation);
-music.addEventListener('timeupdate', updateProgressBar);
-progressContainer.addEventListener('click', setProgressBar);
+prevBtn.addEventListener("click", prevStation);
+nextBtn.addEventListener("click", nextStation);
+music.addEventListener("ended", nextStation);
+music.addEventListener("timeupdate", updateProgressBar);
+progressContainer.addEventListener("click", setProgressBar);
 
-// random color background 
+// random color background
 
 const background = document.querySelector(".background");
 
@@ -258,8 +250,3 @@ setBackgroundColor();
 setInterval(() => {
   setBackgroundColor();
 }, 1500);
-
-
-
-
-
