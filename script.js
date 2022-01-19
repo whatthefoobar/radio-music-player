@@ -21,7 +21,7 @@ let isPlaying = false;
 const channelsUrl =
   "https://api.sr.se/api/v2/channels?format=json&indent=true&pagination=false";
 const defaultApiUrl = "http://api.sr.se/api/v2";
-const defaultChannelId = "132";
+// const defaultChannelId = "132";
 
 // get all channel ids
 async function getRadioChannels() {
