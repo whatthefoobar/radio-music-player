@@ -116,16 +116,22 @@ async function loadStation() {
   let currentStation = allChannelIds[stationIndex];
 
   title.textContent = channelNames[stationIndex];
-  if (playlist.song.length !== 0) {
-    artist.textContent = playlist.song[0].description;
-    setTimeout(
-      () => fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]),
-      10000
-    );
-    artist.textContent = playlist.song[0].description;
+  if (!playlist.song) {
+    artist.textContent = "Loading...";
   } else {
-    artist.textContent = "No song currently playing";
+    artist.textContent = playlist.song[0].description;
   }
+  // if (playlist.song.length !== 0) {
+  //   artist.textContent = playlist.song[0].description;
+  //   setTimeout(
+  //     () => fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]),
+  //     10000
+  //   );
+  //   artist.textContent = playlist.song[0].description;
+  // } else {
+  //   artist.textContent = "No song currently playing";
+  // }
+
   //  check playlist at https://api.sr.se/api/v2/playlists/getplaylistbychannelid?id=164&format=json&indent=true
 
   //  setInterval(() => {
