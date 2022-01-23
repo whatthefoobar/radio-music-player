@@ -7,10 +7,7 @@ The First Web App brief
 
 The First Web App brief
 
-Preview web app:
-https://radio-app-project.netlify.app/
-or
-https://whatthefoobar.github.io/radio-music-player/
+
 
 Radio player that plays all the available radio channels via Sveriges Radio API.
 
