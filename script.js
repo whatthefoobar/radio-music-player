@@ -1,7 +1,7 @@
 const image = document.querySelector("img");
 let station = document.getElementById("station");
 let song = document.getElementById("song");
-const music = document.querySelector("audio");
+const music = document.querySelector("audio"); // for station url link
 const currentTimeEl = document.getElementById("current-time");
 const durationEl = document.getElementById("duration");
 const progress = document.getElementById("progress");
@@ -9,9 +9,8 @@ const progressContainer = document.getElementById("progress-container");
 const prevBtn = document.getElementById("prev");
 const playBtn = document.getElementById("play");
 const nextBtn = document.getElementById("next");
-const cardContainer = document.querySelector(".container");
 
-// Current Song // current station
+//  Current station
 let stationIndex = 0;
 
 // Check if Playing
@@ -23,7 +22,7 @@ const channelsUrl =
 const defaultApiUrl = "http://api.sr.se/api/v2";
 // const defaultChannelId = "132";
 
-// get all channel ids
+// get all channel IDs
 async function getRadioChannels() {
   try {
     let response = await fetch(channelsUrl);
@@ -61,7 +60,7 @@ function playStation() {
   playBtn.classList.replace("fa-play", "fa-pause");
   playBtn.setAttribute("title", "Pause");
   music.play();
-  console.log(music.src);
+  console.log("current playing mp3 link", music.src);
 }
 
 // Pause
@@ -81,6 +80,7 @@ playBtn.addEventListener("click", () =>
 async function loadStation() {
   let channels = await getRadioChannels();
 
+  // get all the channel mp3 url links
   let mp3Channels = [];
   channels.map((channel) => {
     mp3Channels.push(channel.liveaudio.url);
@@ -91,7 +91,7 @@ async function loadStation() {
   let channelNames = [];
   channels.map((channel) => {
     channelNames.push(channel.name);
-    return channelNames; // returns a list of all the channel's mp4 urls
+    return channelNames; // returns a list of all the channel's radio name
   });
 
   //now get all channel Ids
@@ -100,14 +100,6 @@ async function loadStation() {
     allChannelIds.push(channel.id);
     return allChannelIds;
   });
-
-  // console.log(allChannelIds);
-  console.log("current mp3 url playing", mp3Channels[stationIndex]);
-  console.log("current channel Id is", allChannelIds[stationIndex]);
-  // console.log("current Channel is playing", channelIdSubstring);
-
-  //pass channel Id to fetchCurrentlyPlayingByChannelId to get the currently playing song
-  console.log(allChannelIds[stationIndex]);
 
   let playlist = await fetchCurrentlyPlayingByChannelId(
     allChannelIds[stationIndex]
@@ -121,23 +113,6 @@ async function loadStation() {
   } else {
     song.textContent = playlist.song[0].description;
   }
-  // if (playlist.song.length !== 0) {
-  //   artist.textContent = playlist.song[0].description;
-  //   setTimeout(
-  //     () => fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]),
-  //     10000
-  //   );
-  //   artist.textContent = playlist.song[0].description;
-  // } else {
-  //   artist.textContent = "No song currently playing";
-  // }
-
-  //  check playlist at https://api.sr.se/api/v2/playlists/getplaylistbychannelid?id=164&format=json&indent=true
-
-  //  setInterval(() => {
-  //   fetchCurrentlyPlayingByChannelId(allChannelIds[stationIndex]);
-  //   artist.textContent = playlist.song[0].description // i need the song frpm fetchCurrentlyPlayingByChannelId() here
-  //  }, 10000);
 
   image.src = `./img/${Math.floor(Math.random() * 9)}.jpeg`;
   music.src = mp3Channels[stationIndex];
@@ -229,8 +204,7 @@ music.addEventListener("ended", nextStation);
 music.addEventListener("timeupdate", updateProgressBar);
 progressContainer.addEventListener("click", setProgressBar);
 
-// random color background
-
+// Random color background
 const background = document.querySelector(".background");
 
 const getRandomNumber = (limit) => {
