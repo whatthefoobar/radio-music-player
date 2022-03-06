@@ -22,6 +22,7 @@ const channelsUrl =
 const defaultApiUrl = "http://api.sr.se/api/v2";
 const defaultChannelId = "132";
 
+// http://api.sr.se/api/v2/scheduleepisodes?channelid=132&format=json&indent=true
 // get all channel IDs
 async function getRadioChannels() {
   try {
@@ -46,13 +47,31 @@ async function fetchCurrentlyPlayingByChannelId(id) {
     // const channels = res.channels;
 
     // console.log("All channels: ", channels);
-    console.log(playlist);
+    // console.log(playlist);
     return playlist;
   } catch (error) {
     // console.log("error :", error);
     console.log(error.message);
   }
 }
+
+async function fetchCurrentSchedulePlayingByChannelId(id) {
+  try {
+    let response = await fetch(
+      `https://api.sr.se/v2/scheduledepisodes?channelid=${id}&format=json&indent=true`
+    );
+    if (!response.ok) throw Error("Did not receive expected data");
+    let schedule = await response.json();
+    // const channels = res.channels;
+
+    // console.log("All channels: ", channels);
+    console.log("this channel's schedule is:", schedule);
+    return schedule;
+  } catch (error) {
+    console.log(error.message);
+  }
+}
+fetchCurrentSchedulePlayingByChannelId(132);
 
 // Play
 function playStation() {
@@ -100,30 +119,33 @@ async function loadStation() {
     allChannelIds.push(channel.id);
     return allChannelIds;
   });
+  // console.log("all channel ids", allChannelIds);
 
   // all channels current program playing ex music program or news program
-  let channelPrograms = [];
-  channels.map((channel) => {
-    console.log(channel.scheduleurl);
-    // channelPrograms.push(channel.scheduleurl[0]);
-    // return channelPrograms;
-  });
-  console.log(channelPrograms);
-
-  console.log(allChannelIds);
-
-  let playlist = await fetchCurrentlyPlayingByChannelId(
+  // code here
+  //
+  //
+  let schedule = await fetchCurrentSchedulePlayingByChannelId(
     allChannelIds[stationIndex]
   );
-  console.log("playlist for this station", playlist);
-  //console.log(playlist.song[0].description);
+  console.log("schedule for this station", schedule);
+  console.log(schedule.schedule[0].title);
+
+  ////////////////////////////////////////////
   let currentStation = allChannelIds[stationIndex];
+  let playlist = await fetchCurrentlyPlayingByChannelId(currentStation);
+  console.log("playlist for this station", playlist);
 
   station.textContent = channelNames[stationIndex];
   // sometimes .song is not available in the object
-  playlist.song
-    ? (song.textContent = playlist.song[0].description)
-    : (song.textContent = "Loading...");
+
+  // playlist
+  //   ? (song.textContent = playlist.song[0].description)
+  //   : (song.textContent = "No song available");
+
+  schedule.schedule
+    ? (song.textContent = schedule.schedule[0].title)
+    : "No current program playing";
 
   image.src = `./img/${Math.floor(Math.random() * 9)}.jpeg`;
   music.src = mp3Channels[stationIndex];
