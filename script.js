@@ -1,6 +1,6 @@
 const image = document.querySelector("img");
-let title = document.getElementById("title");
-let artist = document.getElementById("artist");
+let station = document.getElementById("station");
+let song = document.getElementById("song");
 const music = document.querySelector("audio");
 const currentTimeEl = document.getElementById("current-time");
 const durationEl = document.getElementById("duration");
@@ -115,11 +115,11 @@ async function loadStation() {
   //console.log(playlist.song[0].description);
   let currentStation = allChannelIds[stationIndex];
 
-  title.textContent = channelNames[stationIndex];
+  station.textContent = channelNames[stationIndex];
   if (!playlist.song) {
-    artist.textContent = "Loading...";
+    song.textContent = "Loading...";
   } else {
-    artist.textContent = playlist.song[0].description;
+    song.textContent = playlist.song[0].description;
   }
   // if (playlist.song.length !== 0) {
   //   artist.textContent = playlist.song[0].description;
