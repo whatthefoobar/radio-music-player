@@ -20,7 +20,7 @@ let isPlaying = false;
 const channelsUrl =
   "https://api.sr.se/api/v2/channels?format=json&indent=true&pagination=false";
 const defaultApiUrl = "http://api.sr.se/api/v2";
-// const defaultChannelId = "132";
+const defaultChannelId = "132";
 
 // get all channel IDs
 async function getRadioChannels() {
@@ -101,24 +101,35 @@ async function loadStation() {
     return allChannelIds;
   });
 
+  // all channels current program playing ex music program or news program
+  let channelPrograms = [];
+  channels.map((channel) => {
+    console.log(channel.scheduleurl);
+    // channelPrograms.push(channel.scheduleurl[0]);
+    // return channelPrograms;
+  });
+  console.log(channelPrograms);
+
+  console.log(allChannelIds);
+
   let playlist = await fetchCurrentlyPlayingByChannelId(
     allChannelIds[stationIndex]
   );
+  console.log("playlist for this station", playlist);
   //console.log(playlist.song[0].description);
   let currentStation = allChannelIds[stationIndex];
 
   station.textContent = channelNames[stationIndex];
-  if (!playlist.song) {
-    song.textContent = "Loading...";
-  } else {
-    song.textContent = playlist.song[0].description;
-  }
+  // sometimes .song is not available in the object
+  playlist.song
+    ? (song.textContent = playlist.song[0].description)
+    : (song.textContent = "Loading...");
 
   image.src = `./img/${Math.floor(Math.random() * 9)}.jpeg`;
   music.src = mp3Channels[stationIndex];
 }
 
-loadStation(132);
+loadStation(defaultChannelId);
 
 // Previous station
 async function prevStation() {

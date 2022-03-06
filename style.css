@@ -1,4 +1,3 @@
-
 @import url("https://fonts.googleapis.com/css?family=Spartan:400,700&display=swap");
 
 html {
@@ -15,7 +14,6 @@ body {
   font-family: Spartan, sans-serif;
   font-size: 12px;
   transition: background 5s;
-  
 }
 
 .player-container {
@@ -42,26 +40,30 @@ body {
   box-shadow: 0 5px 30px 5px rgba(0, 0, 0, 0.5);
 }
 
-h2 {
+#station {
   font-size: 25px;
   text-align: center;
   margin: 0;
-  color:#333;
+  color: #333;
+}
+.program {
+  font-size: 18px;
+  text-align: center;
+  color: #333;
 }
 
-h3 {
+#song {
   font-size: 20px;
   text-align: center;
   font-weight: 400;
   margin: 5px 0 0;
-  color:#333;
+  color: #333;
   padding-bottom: 10px;
 }
 
-span{
-  color:#333;
+span {
+  color: #333;
 }
-
 
 /* Progress */
 .progress-container {
@@ -94,7 +96,6 @@ span{
   top: -20px;
   left: 100px;
   width: 200px;
-
 }
 
 .fas {
